@@ -70,18 +70,13 @@ func (repo *repo) Update(ctx context.Context, sites Sites) (string, error) {
 func (repo *repo) Delete(ctx context.Context, id string) (string, error) {
 	sqlExec := "DROP TABLE if exists sports, data, sites, sites_id, data_id CASCADE"
 	now := time.Now()
-	//tomorrow := now.Add(24 * time.Hour)
-	checkDate := "SELECT * FROM data WHERE CAST(created_at as time) != ?;"
+	checkDate := "SELECT * FROM data WHERE CAST(created_at as time) >= ?;"
 	if err := repo.db.Debug().Exec(checkDate, now).Error; err != nil {
-		repo.db.Exec(sqlExec)
 		return "", err
+	} else {
+		if err := repo.db.Exec(sqlExec).Error; err != nil {
+			return "", err
+		}
 	}
-	/*
-		else {
-			if err := repo.db.Exec(sqlExec).Error; err != nil {
-				return "", err
-			}
-
-		}*/
 	return "Sucess", nil
 }

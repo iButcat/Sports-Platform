@@ -35,7 +35,7 @@ type Sites struct {
 	Odds       struct {
 		/*
 			Using external package for
-			the correct type while
+			the correct type for
 			saving it into the database
 		*/
 		H2H pq.Float64Array `gorm:"type:varchar(64)[]" json:"h2h"`

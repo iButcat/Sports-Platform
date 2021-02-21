@@ -20,7 +20,7 @@ import (
 func main() {
 
 	var (
-		httpAddr = flag.String("http.addr", ":8080", "HTTP listen address")
+		httpAddr = flag.String("http.addr", ":8000", "HTTP listen address") // should  be 8080
 	)
 	flag.Parse()
 
@@ -38,7 +38,6 @@ func main() {
 
 	var db *gorm.DB
 	{
-		// Our database credentials
 		var err error
 		db, err = gorm.Open(postgres.Open(config.DSN), &gorm.Config{})
 		if err != nil {

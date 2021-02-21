@@ -28,6 +28,7 @@ func NewService(repo Repository, logger log.Logger) Service {
 
 var sports Sports
 
+// fetch sports from the api and save it to the database
 func (s service) FetchSportsAPI(ctx context.Context, url string) (string, error) {
 	logger := log.With(s.logger, "method", "FetchSports")
 	resp, err := http.Get(url)

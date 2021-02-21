@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+    db-backend:
+      image: postgres
+      environment:
+        - POSTGRES_DB=postgres
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+
+    db-blog:
+      image: postgres
+      environment:
+        - POSTGRES_DB=postgres
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+
+    db-contact:
+      image: postgres
+      environment:
+        - POSTGRES_DB=postgres
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+
+    backend:
+      image: golang:1.6.1-alpine
+      build: ./backend
+      env_file:
+        - ./backend/config/app.env
+      volumes:
+        - .:/go/src/app
+      restart: unless-stopped
+      depends_on:
+        - db-backend
+
+    blog:
+      image: golang:1.6.1-alpine
+      build: ./blog
+      env_file:
+        - ./blog/config/app.env
+      volumes:
+        - .:/go/src/app
+      restart: unless-stopped
+      depends_on:
+          - db-blog
+
+    contact:
+      image: golang:1.6.1-alpine
+      build: ./contact
+      env_file:
+        - ./contact/config/app.env
+      volumes:
+        - .:/go/src/app
+      restart: unless-stopped
+      depends_on:
+          - db-contact

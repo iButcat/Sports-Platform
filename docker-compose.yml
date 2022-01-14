@@ -1,26 +1,15 @@
 version: '3'
 
 services:
-    db-backend:
+    postgres:
+      container_name: postgres
       image: postgres
       environment:
         - POSTGRES_DB=postgres
         - POSTGRES_USER=postgres
         - POSTGRES_PASSWORD=postgres
-
-    db-blog:
-      image: postgres
-      environment:
-        - POSTGRES_DB=postgres
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=postgres
-
-    db-contact:
-      image: postgres
-      environment:
-        - POSTGRES_DB=postgres
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=postgres
+      ports:
+        - "5432:5432"
 
     backend:
       image: golang:1.6.1-alpine
@@ -29,28 +18,8 @@ services:
         - ./backend/config/app.env
       volumes:
         - .:/go/src/app
+        - ./postgres/postgres:/var/lib/postgresql/data
       restart: unless-stopped
       depends_on:
-        - db-backend
+        - postgres
 
-    blog:
-      image: golang:1.6.1-alpine
-      build: ./blog
-      env_file:
-        - ./blog/config/app.env
-      volumes:
-        - .:/go/src/app
-      restart: unless-stopped
-      depends_on:
-          - db-blog
-
-    contact:
-      image: golang:1.6.1-alpine
-      build: ./contact
-      env_file:
-        - ./contact/config/app.env
-      volumes:
-        - .:/go/src/app
-      restart: unless-stopped
-      depends_on:
-          - db-contact

@@ -31,7 +31,6 @@ func createFolderIfNotExists(path string) error {
 	return nil
 }
 
-// fetch sports from the api and save it into the database
 func FetchSportsAPI(url string) (*models.Sports, error) {
 
 	var sports models.Sports
@@ -48,8 +47,5 @@ func FetchSportsAPI(url string) (*models.Sports, error) {
 		return nil, err
 	}
 
-	if err := writeSportsDataToFile(&sports); err != nil {
-		return nil, err
-	}
 	return &sports, nil
 }

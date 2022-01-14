@@ -17,7 +17,7 @@ type Sports struct {
 
 type Data struct {
 	gorm.Model
-	ID           string         `gorm:"-" json:"id"`
+	ID           string         `gorm:"-" json:"id,omitempty"`
 	SportKey     string         `json:"sport_key"`
 	SportNice    string         `json:"sport_nice"`
 	CommenceTime int            `json:"commence_time"`

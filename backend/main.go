@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	logSpecial "log"
@@ -14,7 +13,6 @@ import (
 
 	"backend/api/service"
 	"backend/api/transport"
-	"backend/api/utils"
 	"backend/config"
 
 	"github.com/go-kit/kit/log"
@@ -54,14 +52,15 @@ func main() {
 	}
 
 	repository := repository.NewRepo(db, logSpecial.Logger{})
-	url := config.URL
-
-	sports, err := utils.FetchSportsAPI(url)
-	if err != nil {
-		logSpecial.Fatal(err)
-	}
-	ctx := context.Background()
-	repository.Create(ctx, sports)
+	/*
+		url := config.URL
+		sports, err := utils.FetchSportsAPI(url)
+		if err != nil {
+			logSpecial.Fatal(err)
+		}
+		ctx := context.Background()
+		repository.Create(ctx, sports)
+	*/
 
 	var serviceImplt service.Service
 	{

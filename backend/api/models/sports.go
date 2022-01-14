@@ -1,8 +1,6 @@
-package api
+package models
 
 import (
-	"context"
-
 	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
@@ -19,6 +17,7 @@ type Sports struct {
 
 type Data struct {
 	gorm.Model
+	ID           string         `gorm:"-" json:"id"`
 	SportKey     string         `json:"sport_key"`
 	SportNice    string         `json:"sport_nice"`
 	CommenceTime int            `json:"commence_time"`
@@ -40,12 +39,4 @@ type Sites struct {
 		*/
 		H2H pq.Float64Array `gorm:"type:varchar(64)[]" json:"h2h"`
 	} `gorm:"embedded" json:"odds"`
-}
-
-type Repository interface {
-	SaveSportsFetch(ctx context.Context, sports Sports) (string, error)
-	Get(ctx context.Context, id string) (Data, error)
-	GetAll(ctx context.Context) ([]Data, []Sites, error)
-	Update(ctx context.Context, sites Sites) (string, error)
-	Delete(ctx context.Context, id string) (string, error)
 }

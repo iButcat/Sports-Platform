@@ -1,18 +1,25 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
+	logSpecial "log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"backend/api" // internal pkg
+	// internal pkg
+
+	"backend/api/service"
+	"backend/api/transport"
+	"backend/api/utils"
 	"backend/config"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
+	"github.com/iButcat/repository"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -46,15 +53,24 @@ func main() {
 		}
 	}
 
-	var service api.Service
+	repository := repository.NewRepo(db, logSpecial.Logger{})
+	url := config.URL
+
+	sports, err := utils.FetchSportsAPI(url)
+	if err != nil {
+		logSpecial.Fatal(err)
+	}
+	ctx := context.Background()
+	repository.Create(ctx, sports)
+
+	var serviceImplt service.Service
 	{
-		repository := api.NewRepo(db, logger)
-		service = api.NewService(repository, logger)
+		serviceImplt = service.NewService(repository, logger)
 	}
 
 	var h http.Handler
 	{
-		h = api.MakeHTTPHandler(service, log.With(logger, "component", "HTTP"))
+		h = transport.MakeHTTPHandler(serviceImplt, log.With(logger, "component", "HTTP"))
 	}
 
 	errs := make(chan error)

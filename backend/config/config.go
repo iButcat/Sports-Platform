@@ -3,9 +3,10 @@ package config
 import "github.com/spf13/viper"
 
 type Config struct {
-	DSN  string `mapstructure:"dsn"`
-	URL  string `mapstructure:"url"`
-	Port string `mapstructure:"port"`
+	DSN    string `mapstructure:"dsn"`
+	URL    string `mapstructure:"url"`
+	ApiKey string `mapstructure:"api_key"`
+	Port   string `mapstructure:"port"`
 }
 
 // Return a config from app.env file

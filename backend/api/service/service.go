@@ -50,9 +50,12 @@ func (s service) GetName(ctx context.Context, teams string) (models.Data, error)
 		level.Error(logger).Log("err", err)
 		return allData.(models.Data), err
 	}
-	var data models.Data
+	var data models.Data // use a slice instead if multiple result
 	for _, value := range allData.(*models.Sports).Data {
 		if value.Teams[0] == teams || strings.ToLower(value.Teams[1]) == teams {
+			data = value
+			break
+		} else if strings.HasPrefix(value.Teams[0], teams) || strings.HasPrefix(value.Teams[1], teams) {
 			data = value
 			break
 		}

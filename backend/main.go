@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	logSpecial "log"
@@ -13,6 +14,7 @@ import (
 
 	"backend/api/service"
 	"backend/api/transport"
+	"backend/api/utils"
 	"backend/config"
 
 	"github.com/go-kit/kit/log"
@@ -25,7 +27,7 @@ import (
 func main() {
 
 	var (
-		httpAddr = flag.String("http.addr", ":8000", "HTTP listen address") // should  be 8080
+		httpAddr = flag.String("http.addr", ":8080", "HTTP listen address") // should  be 8080
 	)
 	flag.Parse()
 
@@ -52,15 +54,6 @@ func main() {
 	}
 
 	repository := repository.NewRepo(db, logSpecial.Logger{})
-	/*
-		url := config.URL
-		sports, err := utils.FetchSportsAPI(url)
-		if err != nil {
-			logSpecial.Fatal(err)
-		}
-		ctx := context.Background()
-		repository.Create(ctx, sports)
-	*/
 
 	var serviceImplt service.Service
 	{
@@ -87,4 +80,15 @@ func main() {
 
 	logger.Log("exit", <-errs)
 
+}
+
+// make a request and save all sports data
+func initAndSaveSport(config config.Config, repository repository.Repository) {
+	url := config.URL
+	sports, err := utils.FetchSportsAPI(url)
+	if err != nil {
+		logSpecial.Fatal(err)
+	}
+	ctx := context.Background()
+	repository.Create(ctx, sports)
 }

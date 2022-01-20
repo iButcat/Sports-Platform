@@ -27,30 +27,11 @@ url=YourUrlFromSportsAPIwithKey
 
 <h3>Endpoints</h3>
 
-1. Fetch endpoints, send a request to the api and save the response in the Database
-```
-127.0.0.1:8080/fetch
-```
+Later... 
 
-2. Get, take an identifier and return data and sites from this id
-```
-127.0.0.1:8080/sports/{id}
-```
+<h3>To do</h3>
 
-3. Get All, does not take any arguments and return all the data and sites
-```
-127.0.0.1:8080/sports
-```
-
-4. Update, not working for the moment but should update odds
-```
-127.0.0.1:8080/sports/update
-```
-
-5. Delete if the times is different from the actual time
-```
-127.0.0.1:8080/sports/delete
-```
+- Finish delete function by checking time match started and delete when finished
 
 <h3>Packages used</h3>
 

@@ -1,7 +1,7 @@
-package utils
+package internal
 
 import (
-	"backend/api/models"
+	"backend/models"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -31,8 +31,7 @@ func createFolderIfNotExists(path string) error {
 	return nil
 }
 
-func FetchSportsAPI(url string) (*models.Sports, error) {
-
+func fetchSportsAPI(url string) (*models.Sports, error) {
 	var sports models.Sports
 
 	resp, err := http.Get(url)

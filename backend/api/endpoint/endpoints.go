@@ -1,8 +1,8 @@
 package endpoint
 
 import (
-	"backend/api/models"
-	"backend/api/service"
+	"backend/models"
+	"backend/service"
 	"context"
 
 	"github.com/go-kit/kit/endpoint"
@@ -21,8 +21,6 @@ func MakeServerEndpoints(service service.Service) Endpoints {
 		GetEndpoint:     MakeGetEndpoint(service),
 		GetNameEndpoint: MakeGetNameEndpoint(service),
 		GetAllEndpoint:  MakeGetAllEndpoint(service),
-		UpdateEndpoint:  MakeUpdateEndpoint(service),
-		DeleteEndpoint:  MakeDeleteEndpoint(service),
 	}
 }
 
@@ -59,33 +57,6 @@ func MakeGetAllEndpoint(service service.Service) endpoint.Endpoint {
 	}
 }
 
-func MakeUpdateEndpoint(service service.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
-		req := request.(UpdateRequest)
-		updated, err := service.Update(ctx, req.Sports)
-		return UpdateResponse{
-			Updated: updated,
-			Err:     err,
-		}, nil
-	}
-}
-
-func MakeDeleteEndpoint(service service.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
-		req := request.(DeleteRequest)
-		deleted, err := service.Delete(ctx, req.Id)
-		if err != nil {
-			return DeleteResponse{
-				Deleted: deleted,
-				Err:     err,
-			}, nil
-		}
-		return DeleteResponse{
-			Deleted: deleted,
-		}, nil
-	}
-}
-
 type (
 	GetRequest struct {
 		Id string `json:"id"`
@@ -111,23 +82,5 @@ type (
 	GetAllResponse struct {
 		Sports *models.Sports `json:"sports"`
 		Err    error          `json:"error,omitempty"`
-	}
-
-	UpdateRequest struct {
-		Sports models.Sports
-	}
-
-	UpdateResponse struct {
-		Updated bool  `json:"updated"`
-		Err     error `json:"error,omitempty"`
-	}
-
-	DeleteRequest struct {
-		Id string `json:"id"`
-	}
-
-	DeleteResponse struct {
-		Deleted bool  `json:"deleted"`
-		Err     error `json:"error,omitempty"`
 	}
 )

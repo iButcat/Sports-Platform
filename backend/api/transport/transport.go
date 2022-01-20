@@ -2,7 +2,7 @@ package transport
 
 import (
 	"backend/api/endpoint"
-	"backend/api/service"
+	"backend/service"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -36,18 +36,6 @@ func MakeHTTPHandler(service service.Service, logger log.Logger) http.Handler {
 		encodeResponse,
 	))
 
-	router.Methods("PUT").Path("/sports/update").Handler(httptransport.NewServer(
-		endpoints.UpdateEndpoint,
-		decodeUpdateRequest,
-		encodeResponse,
-	))
-
-	router.Methods("DELETE").Path("/sports/{id}").Handler(httptransport.NewServer(
-		endpoints.DeleteEndpoint,
-		decodeDeleteRequest,
-		encodeResponse,
-	))
-
 	router.Use(mux.CORSMethodMiddleware(router))
 
 	return router
@@ -73,23 +61,6 @@ func decodeGetNameRequest(_ context.Context, r *http.Request) (request interface
 
 func decodeGetAllRequest(_ context.Context, r *http.Request) (request interface{}, err error) {
 	var req endpoint.GetAllRequest
-	return req, nil
-}
-
-func decodeUpdateRequest(_ context.Context, r *http.Request) (request interface{}, err error) {
-	var req = endpoint.UpdateRequest{}
-	if err := json.NewDecoder(r.Body).Decode(&req.Sports); err != nil {
-		return nil, err
-	}
-	return req, nil
-}
-
-func decodeDeleteRequest(_ context.Context, r *http.Request) (request interface{}, err error) {
-	var req = endpoint.DeleteRequest{}
-	vars := mux.Vars(r)
-	req = endpoint.DeleteRequest{
-		Id: vars["id"],
-	}
 	return req, nil
 }
 

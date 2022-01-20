@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	logSpecial "log"
@@ -11,11 +10,10 @@ import (
 	"syscall"
 
 	// internal pkg
-
-	"backend/api/service"
 	"backend/api/transport"
-	"backend/api/utils"
 	"backend/config"
+	"backend/internal"
+	"backend/service"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -27,7 +25,7 @@ import (
 func main() {
 
 	var (
-		httpAddr = flag.String("http.addr", ":8080", "HTTP listen address") // should  be 8080
+		httpAddr = flag.String("http.addr", ":8080", "HTTP listen address")
 	)
 	flag.Parse()
 
@@ -55,6 +53,23 @@ func main() {
 
 	repository := repository.NewRepo(db, logSpecial.Logger{})
 
+	var operation = internal.NewOperation(config, repository)
+
+	// delete sports each hour
+	internal.FunctionScheduler(func() error {
+		if err := operation.DeleteSports(); err != nil {
+			return err
+		}
+		return nil
+	})
+	// update sports each hour
+	internal.FunctionScheduler(func() error {
+		if err := operation.UpdateSports(); err != nil {
+			return err
+		}
+		return nil
+	})
+
 	var serviceImplt service.Service
 	{
 		serviceImplt = service.NewService(repository, logger)
@@ -79,16 +94,4 @@ func main() {
 	}()
 
 	logger.Log("exit", <-errs)
-
-}
-
-// make a request and save all sports data
-func initAndSaveSport(config config.Config, repository repository.Repository) {
-	url := config.URL
-	sports, err := utils.FetchSportsAPI(url)
-	if err != nil {
-		logSpecial.Fatal(err)
-	}
-	ctx := context.Background()
-	repository.Create(ctx, sports)
 }
